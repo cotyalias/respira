@@ -61,7 +61,52 @@ let breathingActive = false;
 
 let timer;
 
+// ---------- SONIDO TIC TIC ----------
 
+let audioContext;
+
+
+function playTick(){
+
+    if(!audioContext){
+
+        audioContext =
+            new AudioContext();
+
+    }
+
+
+    const oscillator =
+        audioContext.createOscillator();
+
+
+    const gain =
+        audioContext.createGain();
+
+
+    oscillator.type = "sine";
+
+    oscillator.frequency.value = 500;
+
+
+    gain.gain.value = 0.04;
+
+
+    oscillator.connect(gain);
+
+    gain.connect(
+        audioContext.destination
+    );
+
+
+    oscillator.start();
+
+
+    oscillator.stop(
+        audioContext.currentTime + 0.05
+    );
+
+}
 
 /* ---------- INICIO ---------- */
 
@@ -130,7 +175,11 @@ function runPhase(){
   document.querySelector(".inner-circle").style.transform =
     `scale(${current.scale})`;
 
-
+let tickInterval =
+setInterval(
+    playTick,
+    1000
+);
 
     timer = setTimeout(()=>{
 
@@ -159,7 +208,7 @@ function runPhase(){
 
 
 function stopBreathing(){
-
+clearInterval(tickInterval);
 
     breathingActive = false;
 
