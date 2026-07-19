@@ -1,3 +1,4 @@
+console.log("Respirá conectado correctamente");
 /* ==========================================
    RESPIRÁ v1.0
    Motor de respiración consciente
