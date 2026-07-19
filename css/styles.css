@@ -157,6 +157,9 @@ body {
 
     border-radius: 50%;
 
+    transition: transform 4s ease;
+
+    will-change: transform;
 
     background:
 
