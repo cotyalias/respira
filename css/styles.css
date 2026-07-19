@@ -1,7 +1,7 @@
 ```css
 /* ==========================================
-   RESPIRÁ v1.01
-   Identidad visual
+   RESPIRÁ v1.02
+   Identidad + círculo puro
 ========================================== */
 
 
@@ -32,7 +32,8 @@ body {
 
 
 
-/* ---------- BODY ---------- */
+/* ---------- BASE ---------- */
+
 
 body {
 
@@ -43,6 +44,7 @@ body {
 
 
     background:
+
         linear-gradient(
             160deg,
             #dff6f2,
@@ -57,40 +59,52 @@ body {
 
 
 
-/* ---------- HEADER ---------- */
+/* ---------- MARCA ---------- */
 
 
 .header {
 
-    padding: 35px 20px 10px;
+    padding: 45px 20px 10px;
 
     text-align: center;
 
 }
 
 
+
 .logo h1 {
 
-    font-size: 3rem;
+    font-size: 3.2rem;
 
     font-weight: 300;
 
-    letter-spacing: 3px;
+    letter-spacing: 5px;
+
+    line-height: 1;
 
 }
+
 
 
 .logo p {
 
     margin-top: 8px;
 
-    opacity: .65;
+    font-size: 1.15rem;
+
+    letter-spacing: 2px;
+
+    font-weight: 300;
+
+    text-transform: lowercase;
+
+    opacity: .7;
 
 }
 
 
 
-/* ---------- CONTENEDOR PRINCIPAL ---------- */
+/* ---------- APP ---------- */
 
 
 .app {
@@ -121,41 +135,42 @@ body {
 
 
 
-/* ---------- INTRO ---------- */
+/* ---------- FRASE CENTRAL ---------- */
 
 
 .intro {
 
-    margin-bottom: 45px;
+    margin-bottom: 50px;
 
 }
 
 
-.intro h2 {
 
+.intro h2 {
 
     font-size: 1.8rem;
 
-    line-height: 1.4;
+    line-height: 1.45;
 
     font-weight: 300;
 
 }
 
 
+
 .intro p {
 
-    margin-top: 15px;
+    margin-top: 18px;
 
     font-size: 1.1rem;
 
-    opacity: .75;
+    opacity: .7;
 
 }
 
 
 
-/* ---------- CIRCULO ---------- */
+/* ---------- CIRCULO PURO ---------- */
 
 
 .breathing-circle {
@@ -165,7 +180,7 @@ body {
     height: 260px;
 
 
-    margin: 0 auto 40px;
+    margin: 0 auto 45px;
 
 
     border-radius: 50%;
@@ -178,18 +193,20 @@ body {
     align-items: center;
 
 
+
     background:
 
         radial-gradient(
             circle,
-            rgba(255,255,255,.75),
+            rgba(255,255,255,.85),
             rgba(255,255,255,.25)
         );
 
 
+
     box-shadow:
 
-        0 20px 50px rgba(0,0,0,.12);
+        0 20px 60px rgba(0,0,0,.10);
 
 
 
@@ -197,11 +214,10 @@ body {
 
 
 
-/* ---------- NUCLEO ---------- */
+/* ---------- NUCLEO QUE RESPIRA ---------- */
 
 
 .inner-circle {
-
 
     width: 150px;
 
@@ -209,6 +225,7 @@ body {
 
 
     border-radius: 50%;
+
 
 
     background:
@@ -226,7 +243,6 @@ body {
     will-change: transform;
 
 
-
 }
 
 
@@ -236,13 +252,11 @@ body {
 
 .breathing-info h3 {
 
-
     font-size: 1.8rem;
 
     font-weight: 400;
 
-    margin-bottom: 12px;
-
+    margin-bottom: 10px;
 
 }
 
@@ -250,11 +264,9 @@ body {
 
 .breathing-info p {
 
-
     opacity: .7;
 
     margin-bottom: 30px;
-
 
 }
 
@@ -271,19 +283,20 @@ body {
     cursor: pointer;
 
 
-    padding: 16px 45px;
+    padding: 16px 48px;
 
 
     border-radius: 50px;
 
 
-    background: white;
+    background: rgba(255,255,255,.9);
 
 
     color: #243447;
 
 
     font-size: 1rem;
+
 
 
     box-shadow:
@@ -294,8 +307,7 @@ body {
 
     transition:
 
-        transform .3s ease,
-        box-shadow .3s ease;
+        transform .3s ease;
 
 
 
@@ -309,30 +321,6 @@ body {
     transform: translateY(-3px);
 
 
-    box-shadow:
-
-        0 15px 30px rgba(0,0,0,.18);
-
-
-}
-
-
-
-/* ---------- FUTURO SEGUIMIENTO ---------- */
-
-
-.practice-stats {
-
-
-    margin-top: 45px;
-
-
-    font-size: .9rem;
-
-
-    opacity: .55;
-
-
 }
 
 
@@ -342,18 +330,13 @@ body {
 
 footer {
 
-
     text-align: center;
-
 
     padding: 20px;
 
-
-    opacity: .6;
-
-
     font-size: .85rem;
 
+    opacity: .6;
 
 }
 
@@ -367,7 +350,7 @@ footer {
 
     .logo h1 {
 
-        font-size: 2.4rem;
+        font-size: 2.5rem;
 
     }
 
