@@ -56,8 +56,12 @@ const breathingCycle = [
 
 
 let currentPhase = 0;
+if(audioContext && audioContext.state === "suspended"){
 
-let breathingActive = false;
+    audioContext.resume();
+
+}
+breathingActive = true;
 
 let timer;
 
@@ -92,10 +96,10 @@ if(audioContext.state === "suspended"){
 
     oscillator.type = "sine";
 
-    oscillator.frequency.value = 500;
+   oscillator.frequency.value = 700;
 
 
-    gain.gain.value = 0.04;
+   gain.gain.value = 0.12;
 
 
     oscillator.connect(gain);
