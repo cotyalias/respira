@@ -127,8 +127,8 @@ function runPhase(){
 
 
 
-    breathingCircle.style.transform =
-        `scale(${current.scale})`;
+  document.querySelector(".inner-circle").style.transform =
+    `scale(${current.scale})`;
 
 
 
