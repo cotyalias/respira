@@ -68,12 +68,18 @@ let audioContext;
 
 function playTick(){
 
-    if(!audioContext){
+if(!audioContext){
 
-        audioContext =
-            new AudioContext();
+    audioContext = new AudioContext();
 
-    }
+}
+
+
+if(audioContext.state === "suspended"){
+
+    audioContext.resume();
+
+}
 
 
     const oscillator =
