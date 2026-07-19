@@ -115,9 +115,11 @@ body {
 
     height: 260px;
 
-    margin: 0 auto 40px;
+    transform: scale(1);
 
-    border-radius: 50%;
+    will-change: transform;
+
+    margin: 0 auto 40px;
 
 
     display: flex;
