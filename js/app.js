@@ -1,266 +1,222 @@
-/* ==========================================================
-   RESPIRÁ v1.0
-   Motor principal
-   HTML + CSS + JavaScript puro
-========================================================== */
+// =====================================================
+// Respirá v1.1
+// Motor principal de respiración
+// Inhalar 4s - Sostener 4s - Exhalar 6s
+// Audio:
+//   • Inhalar  -> bowl-warm.ogg al 100%
+//   • Sostener -> silencio
+//   • Exhalar  -> bowl-warm.ogg al 50%
+// =====================================================
 
-"use strict";
+(() => {
+    "use strict";
 
-/* ==========================================================
-   CONFIGURACIÓN
-========================================================== */
+    // -------------------------------------------------
+    // Configuración
+    // -------------------------------------------------
 
-const BREATHING_CYCLE = [
-    {
-        title: "Inhalá",
-        subtitle: "Recibí el aire. Volvé al presente.",
-        seconds: 4,
-        scale: 1.22
-    },
-    {
-        title: "Sostené",
-        subtitle: "Observá la pausa.",
-        seconds: 4,
-        scale: 1.22
-    },
-    {
-        title: "Exhalá",
-        subtitle: "Soltá lentamente.",
-        seconds: 6,
-        scale: 1
+    const PHASES = [
+        { name: "Inhalá", duration: 4 },
+        { name: "Sostené", duration: 4 },
+        { name: "Exhalá", duration: 6 }
+    ];
+
+    const AUDIO_FILE = "audio/bowl-warm.ogg";
+
+    // -------------------------------------------------
+    // Elementos
+    // -------------------------------------------------
+
+    const circle =
+        document.getElementById("circle") ||
+        document.querySelector(".circle");
+
+    const phaseText =
+        document.getElementById("phase") ||
+        document.getElementById("instruction") ||
+        document.querySelector(".phase");
+
+    const counter =
+        document.getElementById("counter") ||
+        document.querySelector(".counter");
+
+    const startButton =
+        document.getElementById("startButton") ||
+        document.getElementById("start") ||
+        document.querySelector(".start-button");
+
+    // -------------------------------------------------
+    // Estado
+    // -------------------------------------------------
+
+    let running = false;
+    let timer = null;
+
+    let phaseIndex = 0;
+    let secondsLeft = PHASES[0].duration;
+
+    // -------------------------------------------------
+    // Audio
+    // -------------------------------------------------
+
+    const bowl = new Audio(AUDIO_FILE);
+    bowl.preload = "auto";
+
+    function playBowl(volume) {
+        bowl.pause();
+        bowl.currentTime = 0;
+        bowl.volume = volume;
+
+        bowl.play().catch(() => {
+            // Algunos navegadores bloquean el audio
+            // hasta una interacción del usuario.
+        });
     }
-];
 
-
-/* ==========================================================
-   REFERENCIAS DEL DOM
-========================================================== */
-
-const instruction = document.getElementById("instruction");
-const phase = document.getElementById("phase");
-const button = document.getElementById("startButton");
-const innerCircle = document.querySelector(".inner-circle");
-
-
-/* ==========================================================
-   ESTADO
-========================================================== */
-
-let running = false;
-let currentPhase = 0;
-
-let phaseTimeout = null;
-let countdownInterval = null;
-let tickInterval = null;
-
-
-/* ==========================================================
-   AUDIO
-   (Preparado para reemplazar por archivos reales)
-========================================================== */
-
-let audioContext = null;
-
-function playTick() {
-
-    if (!running) return;
-
-    if (!audioContext) {
-        audioContext =
-            new (window.AudioContext || window.webkitAudioContext)();
+    function stopBowl() {
+        bowl.pause();
+        bowl.currentTime = 0;
     }
 
-    if (audioContext.state === "suspended") {
-        audioContext.resume();
+    // -------------------------------------------------
+    // UI
+    // -------------------------------------------------
+
+    function updateCounter() {
+        if (counter) {
+            counter.textContent = secondsLeft;
+        }
     }
 
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
+    function animateCircle() {
+        if (!circle) return;
 
-    osc.type = "triangle";
-    osc.frequency.value = 440;
+        circle.style.transition = "transform 1s ease";
 
-    gain.gain.setValueAtTime(
-        0.02,
-        audioContext.currentTime
-    );
+        switch (PHASES[phaseIndex].name) {
+            case "Inhalá":
+                circle.style.transform = "scale(1.28)";
+                break;
 
-    gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        audioContext.currentTime + 0.08
-    );
+            case "Sostené":
+                circle.style.transform = "scale(1.28)";
+                break;
 
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
+            case "Exhalá":
+                circle.style.transform = "scale(0.82)";
+                break;
+        }
+    }
 
-    osc.start();
-    osc.stop(audioContext.currentTime + 0.08);
+    function updatePhase() {
+        const phase = PHASES[phaseIndex];
 
-}
-
-
-/* ==========================================================
-   UTILIDADES
-========================================================== */
-
-function clearTimers() {
-
-    clearTimeout(phaseTimeout);
-    clearInterval(countdownInterval);
-    clearInterval(tickInterval);
-
-    phaseTimeout = null;
-    countdownInterval = null;
-    tickInterval = null;
-
-}
-
-
-function animateCircle(scale) {
-
-    innerCircle.style.transform =
-        `scale(${scale})`;
-
-}
-
-
-function updateButton() {
-
-    button.textContent =
-        running
-            ? "Finalizar práctica"
-            : "Comenzar práctica";
-
-}
-
-
-/* ==========================================================
-   FASE
-========================================================== */
-
-function runPhase(index) {
-
-    if (!running) return;
-
-    currentPhase = index;
-
-    const step = BREATHING_CYCLE[index];
-
-    instruction.textContent =
-        step.title;
-
-    animateCircle(step.scale);
-
-    let remaining = step.seconds;
-
-    phase.textContent =
-        `${step.subtitle} (${remaining})`;
-
-    clearInterval(countdownInterval);
-
-    countdownInterval = setInterval(() => {
-
-        if (!running) return;
-
-        remaining--;
-
-        if (remaining > 0) {
-
-            phase.textContent =
-                `${step.subtitle} (${remaining})`;
-
+        if (phaseText) {
+            phaseText.textContent = phase.name;
         }
 
-    }, 1000);
+        animateCircle();
 
+        switch (phase.name) {
+            case "Inhalá":
+                playBowl(1.0);
+                break;
 
-    clearInterval(tickInterval);
+            case "Sostené":
+                stopBowl();
+                break;
 
-    tickInterval = setInterval(() => {
+            case "Exhalá":
+                playBowl(0.5);
+                break;
+        }
 
-        playTick();
-
-    }, 1000);
-
-
-    phaseTimeout = setTimeout(() => {
-
-        if (!running) return;
-
-        const next =
-            (index + 1) %
-            BREATHING_CYCLE.length;
-
-        runPhase(next);
-
-    }, step.seconds * 1000);
-
-}
-
-
-/* ==========================================================
-   INICIAR
-========================================================== */
-
-function startPractice() {
-
-    if (running) return;
-
-    running = true;
-
-    updateButton();
-
-    runPhase(0);
-
-}
-
-
-/* ==========================================================
-   FINALIZAR
-========================================================== */
-
-function stopPractice() {
-
-    running = false;
-
-    clearTimers();
-
-    animateCircle(1);
-
-    instruction.textContent =
-        "La práctica terminó";
-
-    phase.textContent =
-        "Gracias por regalarte este momento.";
-
-    updateButton();
-
-}
-
-
-/* ==========================================================
-   BOTÓN
-========================================================== */
-
-button.addEventListener("click", () => {
-
-    if (running) {
-
-        stopPractice();
-
-    } else {
-
-        startPractice();
-
+        updateCounter();
     }
 
-});
+    // -------------------------------------------------
+    // Ciclo principal
+    // -------------------------------------------------
 
+    function nextPhase() {
+        phaseIndex = (phaseIndex + 1) % PHASES.length;
+        secondsLeft = PHASES[phaseIndex].duration;
+        updatePhase();
+    }
 
-/* ==========================================================
-   ESTADO INICIAL
-========================================================== */
+    function tick() {
+        if (!running) return;
 
-animateCircle(1);
+        secondsLeft--;
 
-updateButton();
+        if (secondsLeft <= 0) {
+            nextPhase();
+        } else {
+            updateCounter();
+        }
+    }
+
+    // -------------------------------------------------
+    // Inicio / Fin
+    // -------------------------------------------------
+
+    function startPractice() {
+        if (running) return;
+
+        running = true;
+
+        phaseIndex = 0;
+        secondsLeft = PHASES[0].duration;
+
+        updatePhase();
+
+        clearInterval(timer);
+        timer = setInterval(tick, 1000);
+
+        if (startButton) {
+            startButton.textContent = "Finalizar práctica";
+        }
+    }
+
+    function stopPractice() {
+        running = false;
+
+        clearInterval(timer);
+        timer = null;
+
+        stopBowl();
+
+        if (circle) {
+            circle.style.transform = "scale(1)";
+        }
+
+        if (phaseText) {
+            phaseText.textContent = "Respirá";
+        }
+
+        if (counter) {
+            counter.textContent = "";
+        }
+
+        if (startButton) {
+            startButton.textContent = "Comenzar práctica";
+        }
+    }
+
+    // -------------------------------------------------
+    // Eventos
+    // -------------------------------------------------
+
+    if (startButton) {
+        startButton.addEventListener("click", () => {
+            if (running) {
+                stopPractice();
+            } else {
+                startPractice();
+            }
+        });
+    }
+
+    // Estado inicial
+    stopPractice();
+})();
